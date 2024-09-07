@@ -1,0 +1,10 @@
+
+lib/
+.vscode
+data
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+
+test.js
+test.ts

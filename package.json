@@ -1,0 +1,48 @@
+{
+  "name": "@karinjs/puppeteer-core",
+  "version": "0.0.1",
+  "description": "轻量·高效·易用的 Puppeteer 截图、视频生成工具",
+  "keywords": [
+    "puppeteer",
+    "screenshot",
+    "karin"
+  ],
+  "homepage": "https://github.com/KarinJS/puppeteer-core",
+  "bugs": {
+    "url": "https://github.com/KarinJS/puppeteer-core/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KarinJS/puppeteer-core.git"
+  },
+  "license": "MIT",
+  "author": "shijin",
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && npm run fix:all",
+    "build:npm": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
+    "fix:all": "eslint lib/**/*.js --fix && eslint lib/**/*.d.ts --fix",
+    "pub": "npm publish --access public",
+    "sort": "npx sort-package-json"
+  },
+  "dependencies": {
+    "@types/decompress": "^4.2.7",
+    "decompress": "4.2.1",
+    "log4js": "6.9.1",
+    "puppeteer-core": "22.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.14.2",
+    "eslint": "latest",
+    "neostandard": "latest",
+    "sort-package-json": "2.10.0",
+    "tsc-alias": "1.8.10",
+    "typescript": "5.4.5"
+  }
+}

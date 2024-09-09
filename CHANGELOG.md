@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/KarinJS/puppeteer-core/compare/v1.0.1...v1.0.2) (2024-09-09)
+
+
+### Bug Fixes
+
+* dir ([465a64e](https://github.com/KarinJS/puppeteer-core/commit/465a64ef6882d19c0dedf9b241979616b6cbb389))
+
 ## [1.0.1](https://github.com/KarinJS/puppeteer-core/compare/v1.0.0...v1.0.1) (2024-09-09)
 
 

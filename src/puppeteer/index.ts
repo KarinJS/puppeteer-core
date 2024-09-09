@@ -103,6 +103,7 @@ export class Puppeteer {
       await this.launch()
     }
     console.info('[chrome] 初始化完成~')
+    return this
   }
 
   /**
@@ -112,6 +113,7 @@ export class Puppeteer {
     const browser = new Render(this.index++, this.browserOptions)
     await browser.init()
     this.list.push(browser)
+    return this
   }
 
   /**

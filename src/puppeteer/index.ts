@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import InitChrome from './init'
-import { common } from 'src/common/common'
+import { common } from '@Common'
 import { Render, RenderResult, screenshot } from './core'
 import { PuppeteerLaunchOptions } from 'puppeteer-core'
 

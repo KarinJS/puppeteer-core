@@ -22,6 +22,7 @@
   "types": "./lib/index.d.ts",
   "files": [
     "lib",
+    "LICENSE",
     "package.json"
   ],
   "scripts": {
@@ -32,12 +33,11 @@
     "sort": "npx sort-package-json"
   },
   "dependencies": {
-    "@types/decompress": "^4.2.7",
     "decompress": "4.2.1",
-    "log4js": "6.9.1",
     "puppeteer-core": "22.10.0"
   },
   "devDependencies": {
+    "@types/decompress": "^4.2.7",
     "@types/node": "20.14.2",
     "eslint": "latest",
     "neostandard": "latest",

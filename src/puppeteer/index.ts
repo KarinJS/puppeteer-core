@@ -71,6 +71,9 @@ export class Puppeteer {
   }
 
   async init () {
+    /** 用户设置的资源根目录 */
+    if (this.config.dir) common.dir = this.config.dir
+
     /** 浏览器执行路径 */
     if (!this.config?.executablePath) {
       const version = this.config.version || '125.0.6422.78'
@@ -81,7 +84,7 @@ export class Puppeteer {
 
     /** 用户数据存储路径 */
     if (!this.config?.userDataDir) {
-      this.browserOptions.userDataDir = this.config.dir + '/data/userDataDir'
+      this.browserOptions.userDataDir = common.dir + '/data/userDataDir'
     }
 
     /** 监听浏览器关闭事件 移除浏览器实例 */

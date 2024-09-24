@@ -1,19 +1,13 @@
 import { common } from '@Common'
 import { ChildProcess } from 'child_process'
-import puppeteer, { Browser, GoToOptions, Page, PuppeteerLaunchOptions, ScreenshotOptions } from 'puppeteer-core'
+import puppeteer, { Browser, GoToOptions, HTTPRequest, Page, PuppeteerLaunchOptions, ScreenshotOptions } from 'puppeteer-core'
 
 export interface screenshot extends ScreenshotOptions {
-  /**
-   * http地址或本地文件路径
-   */
+  /** http地址或本地文件路径 */
   file: string
-  /**
-   * 获取指定元素 默认body
-   */
+  /** 获取指定元素 默认body */
   selector?: string
-  /**
-   * 截图类型 默认'jpeg'
-   */
+  /** 截图类型 默认'jpeg' */
   type?: 'png' | 'jpeg' | 'webp'
   /**
    * 截图质量 默认90
@@ -21,7 +15,7 @@ export interface screenshot extends ScreenshotOptions {
    */
   quality?: number
   /**
-   * 额外的 HTTP 头信息将随页面发起的每个请求一起发送
+   * - 额外的 HTTP 头信息将随页面发起的每个请求一起发送
    * - 标头值必须是字符串
    * - 所有 HTTP 标头名称均小写。(HTTP 标头不区分大小写，因此这不会影响服务器代码）。
    */
@@ -41,9 +35,7 @@ export interface screenshot extends ScreenshotOptions {
    * @default 'binary'
    */
   encoding?: 'base64' | 'binary'
-  /**
-   * 保存图片的文件路径
-   */
+  /** 保存图片的文件路径 */
   path?: string
   /**
    * 是否隐藏背景
@@ -55,17 +47,11 @@ export interface screenshot extends ScreenshotOptions {
    * @default false
    */
   captureBeyondViewport?: boolean
-  /**
-   * 设置视窗大小和设备像素比
-   */
+  /** 设置视窗大小和设备像素比 */
   setViewport?: {
-    /**
-     * 视窗宽度
-     */
+    /** 视窗宽度 */
     width?: number
-    /**
-     * 视窗高度
-     */
+    /** 视窗高度 */
     height?: number
     /**
      * 设备像素比
@@ -80,30 +66,20 @@ export interface screenshot extends ScreenshotOptions {
    * @default 'body'
    */
   screensEval?: string
-  /**
-   * 分页截图 传递数字则视为视窗高度 返回数组
-   */
+  /** 分页截图 传递数字则视为视窗高度 返回数组 */
   multiPage?: number | boolean
-  /**
-   * 页面goto时的参数
-   */
+  /** 页面goto时的参数 */
   pageGotoParams?: GoToOptions,
-  /**
-   * 等待指定元素加载完成
-   */
+  /** 等待指定元素加载完成 */
   waitForSelector?: string | string[]
-  /**
-   * 等待特定函数完成
-   */
+  /** 等待特定函数完成 */
   waitForFunction?: string | string[]
-  /**
-   * 等待特定请求完成
-   */
+  /** 等待特定请求完成 */
   waitForRequest?: string | string[]
-  /**
-   * 等待特定响应完成
-   */
+  /** 等待特定响应完成 */
   waitForResponse?: string | string[]
+  /** 请求拦截 */
+  setRequestInterception?: (HTTPRequest: HTTPRequest) => void
 }
 
 export interface screenshotRes {
@@ -250,6 +226,12 @@ export class Render {
     /** 创建页面 */
     const page = await this.browser.newPage()
 
+    /** 请求拦截处理 */
+    if (typeof data.setRequestInterception === 'function') {
+      await page.setRequestInterception(true)
+      page.on('request', data.setRequestInterception)
+    }
+
     /** 打开页面数+1 */
     common.emit('newPage', this.id)
 
@@ -299,6 +281,8 @@ export class Render {
 
   /**
    * 获取页面元素
+   * @param page 页面实例
+   * @param name 元素名称
    */
   async elementHandle (page: Page, name?: string) {
     try {
@@ -315,6 +299,7 @@ export class Render {
 
   /**
    * 生成图片次数+1 并关闭页面
+   * @param page 页面实例
    */
   async screenshot (page: Page) {
     common.emit('screenshot', this.id)

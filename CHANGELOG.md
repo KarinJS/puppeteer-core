@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/KarinJS/puppeteer-core/compare/v1.0.4...v1.0.5) (2024-09-26)
+
+
+### Bug Fixes
+
+* 统一缓存目录 ([302068d](https://github.com/KarinJS/puppeteer-core/commit/302068de0a0a2f46dedc72afc8b31a71c9c4af17))
+
 ## [1.0.4](https://github.com/KarinJS/puppeteer-core/compare/v1.0.3...v1.0.4) (2024-09-24)
 
 

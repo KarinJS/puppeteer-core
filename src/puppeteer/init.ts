@@ -1,23 +1,24 @@
 import fs from 'fs'
 import os from 'os'
+import path from 'path'
 import { common, Platform } from '@Common'
 
 export interface Info {
-  /**
-   * 根路径 也就是解压路径
-   */
+  /** 是否为windows */
+  isWin: boolean
+  /** 操作系统标识符 */
+  platform: Platform
+  /** 版本 */
+  version: string
+  /** 缓存目录 */
+  cache: string
+  /** 根路径 也就是解压路径 */
   dir: string
-  /**
-   * 下载后zip存放路径
-   */
+  /** 下载后zip存放路径 */
   zip: string
-  /**
-   * chrome文件夹根路径
-   */
+  /** chrome文件夹根路径 */
   chromeDir: string
-  /**
-   * chrome二进制路径
-   */
+  /** chrome二进制路径 */
   chrome: string
 }
 
@@ -148,15 +149,33 @@ export default class InitChrome {
     /** 获取当前的系统 */
     const system = await common.exec('cat /etc/os-release').catch(() => '') as string
 
+    const install = async (list: { type: string, command: string }[]) => {
+      await Promise.all(list.map(async (item) => {
+        const command = item.type === '字体' && os.userInfo().uid === 0 ? `sudo ${item.command}` : item.command
+        await common.exec(command).catch((e) => console.error(`[chrome][init] 安装${item.type}失败 请尝试手动执行: ${item.command}\n`, e))
+      }))
+    }
+
     if (/centos/i.test(system)) {
-      await common.exec(`yum install -y ${CentOS.join(' ')}`)
-      await common.exec('yum update nss -y')
+      const list = [
+        { type: '依赖', command: `yum install -y ${CentOS.join(' ')}` },
+        { type: 'nss', command: 'yum update nss -y' },
+        { type: '字体', command: 'yum install wqy-microhei-fonts noto-sans-cjk-fonts adobe-source-han-sans-cn-fonts' },
+      ]
+
+      await install(list)
     } else if (/debian|ubuntu/i.test(system)) {
-      await common.exec(`apt-get install -y ${Debian.join(' ')}`)
+      const list = [
+        { type: '依赖', command: `apt-get install -y ${Debian.join(' ')}` },
+        { type: '字体', command: 'apt install fonts-wqy-microhei fonts-noto-cjk fonts-adobe-source-han-sans-cn' },
+      ]
+
+      await install(list)
     } else {
       console.error(`[Error] 未知系统: ${system} 请自行处理 Chrome 依赖`)
       return
     }
+
     console.log('[chrome][init] 环境初始化完成')
   }
 
@@ -187,32 +206,29 @@ export default class InitChrome {
    * 获取chrome信息
    */
   GetInfo (): Info {
-    /**
-     * 版本
-     */
-    const version = `chrome-headless-shell-${this.platform}`
+    /** 操作系统标识符 */
+    const platform = this.platform
+    /** 是否为windows */
+    const isWin = os.platform() === 'win32'
+    /** 缓存目录 */
+    const cache = path.join(os.homedir(), '.cache', 'puppeteer', 'chrome-headless-shell')
+    /** 版本 */
+    const version = `${platform}-${this.version}`
+    /** 存放实际 Chrome 可执行文件的目录 */
+    const dir = path.join(cache, version)
+    /** 下载后压缩包的存放路径 */
+    const zip = path.join(dir, `chrome-headless-shell-${platform}.zip`)
+    /** 解压路径 */
+    const chromeDir = dir
+    /** chrome二进制路径 */
+    const chrome = path.join(chromeDir, `chrome-headless-shell-${platform}`, `chrome-headless-shell${isWin ? '.exe' : ''}`)
 
-    /**
-     * 根路径 也就是解压路径
-     */
-    const dir = `${common.dir}/data/chromium`
-
-    /**
-     * 下载后zip存放路径
-     */
-    const zip = `${dir}/${version}.zip`
-
-    /**
-     * chrome文件夹根路径
-     */
-    const chromeDir = `${dir}/${version}`
-
-    /**
-     * chrome二进制路径
-     */
-    const chrome = `${chromeDir}/chrome-headless-shell${this.platform === 'win64' ? '.exe' : ''}`
-
+    // tips: 压缩包解压后会带一个文件夹: chrome-headless-shell-${platform}
     return {
+      isWin,
+      platform,
+      version,
+      cache,
       dir,
       zip,
       chromeDir,

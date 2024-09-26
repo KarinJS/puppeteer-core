@@ -86,16 +86,10 @@ export class Common extends EventEmitter {
    */
   async ping (url: string, timeout: number = 2000): Promise<boolean> {
     return new Promise((resolve) => {
-      const request = https.get(url, (res) => {
-        resolve(res.statusCode === 200)
-      })
-
-      request.on('error', () => {
-        resolve(false)
-      })
-
+      const request = https.get(url, (res) => resolve(res.statusCode === 200))
+      request.on('error', () => resolve(false))
       request.setTimeout(timeout, () => {
-        request.abort()
+        request.destroy()
         resolve(false)
       })
     })

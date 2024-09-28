@@ -79,7 +79,7 @@ export interface screenshot extends ScreenshotOptions {
   /** 等待特定响应完成 */
   waitForResponse?: string | string[]
   /** 请求拦截 */
-  setRequestInterception?: (HTTPRequest: HTTPRequest) => void
+  setRequestInterception?: (HTTPRequest: HTTPRequest, data: screenshot) => void
 }
 
 export interface screenshotRes {
@@ -229,7 +229,7 @@ export class Render {
     /** 请求拦截处理 */
     if (typeof data.setRequestInterception === 'function') {
       await page.setRequestInterception(true)
-      page.on('request', data.setRequestInterception)
+      page.on('request', (req) => data.setRequestInterception!(req, data))
     }
 
     /** 打开页面数+1 */

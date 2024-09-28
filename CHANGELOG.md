@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.6](https://github.com/KarinJS/puppeteer-core/compare/v1.0.5...v1.0.6) (2024-09-28)
+
+
+### Bug Fixes
+
+* setRequestInterception ([ef5a65b](https://github.com/KarinJS/puppeteer-core/commit/ef5a65b66638883d1c901a6a243e4afc3e261a91))
+
 ## [1.0.5](https://github.com/KarinJS/puppeteer-core/compare/v1.0.4...v1.0.5) (2024-09-26)
 
 

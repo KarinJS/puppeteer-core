@@ -5,7 +5,12 @@ import puppeteer, { Browser, GoToOptions, HTTPRequest, Page, PuppeteerLaunchOpti
 export interface screenshot extends ScreenshotOptions {
   /** http地址或本地文件路径 */
   file: string
-  /** 获取指定元素 默认body */
+  /**
+ * 选择的元素截图
+ * fullPage为false时生效
+ * 如果未找到指定元素则使用body
+ * @default 'body'
+ */
   selector?: string
   /** 截图类型 默认'jpeg' */
   type?: 'png' | 'jpeg' | 'webp'
@@ -59,13 +64,6 @@ export interface screenshot extends ScreenshotOptions {
      */
     deviceScaleFactor?: number
   }
-  /**
-   * 选择的元素截图
-   * fullPage为false时生效
-   * 如果未找到指定元素则使用body
-   * @default 'body'
-   */
-  screensEval?: string
   /** 分页截图 传递数字则视为视窗高度 返回数组 */
   multiPage?: number | boolean
   /** 页面goto时的参数 */

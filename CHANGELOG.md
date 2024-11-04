@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.7](https://github.com/KarinJS/puppeteer-core/compare/v1.0.6...v1.0.7) (2024-11-04)
+
+
+### Bug Fixes
+
+* arch ([6f80373](https://github.com/KarinJS/puppeteer-core/commit/6f803730f0a2e56a86c055d4b47794bcad016c96))
+* 修正返回类型检查错误 ([753733e](https://github.com/KarinJS/puppeteer-core/commit/753733e954a33ed60e97ec76e955eae9beb4727b))
+
 ## [1.0.6](https://github.com/KarinJS/puppeteer-core/compare/v1.0.5...v1.0.6) (2024-09-28)
 
 

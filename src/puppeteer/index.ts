@@ -122,13 +122,15 @@ export class Puppeteer {
    * @returns 截图结果
    */
   async screenshot<T extends screenshot> (options: T): Promise<RenderResult<T>> {
-    /** 第一次 */
-    const result = await this.task(options)
-    if (Array.isArray(result) || Buffer.isBuffer(result)) return result
-
-    /** 第二次 */
-    console.error('[chrome] 第一次截图失败，正在重试~')
-    return await this.task(options)
+    try {
+      /** 第一次 */
+      return await this.task(options)
+    } catch (error) {
+      /** 第二次 */
+      console.error('[chrome] 第一次截图失败，正在重试~')
+      console.error(error)
+      return await this.task(options)
+    }
   }
 
   /**

@@ -205,7 +205,8 @@ export class Render {
 
         /** 截图位置 */
         data.clip = { x: 0, y, width: boxWidth, height: clipHeight }
-        const buffer = await body!.screenshot(data)
+        const Uint8Array = await body!.screenshot(data)
+        const buffer = Buffer.from(Uint8Array)
         list.push(buffer)
       }
 

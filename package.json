@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "decompress": "4.2.1",
-    "puppeteer-core": "22.10.0"
+    "puppeteer-core": "23.6.1"
   },
   "devDependencies": {
     "@types/decompress": "^4.2.7",

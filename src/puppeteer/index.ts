@@ -3,13 +3,9 @@ import InitChrome from './init'
 import { common } from '@Common'
 import { Render, RenderResult, screenshot } from './core'
 import { PuppeteerLaunchOptions } from 'puppeteer-core'
+import { PUPPETEER_REVISIONS } from 'puppeteer-core/lib/cjs/puppeteer/revisions.js'
 
 export interface RunConfig extends PuppeteerLaunchOptions {
-  /**
-   * 使用的浏览器版本
-   * @default 125.0.6422.78
-   */
-  version?: string
   /**
    * 启动浏览器数量
    * @default 1
@@ -76,7 +72,7 @@ export class Puppeteer {
 
     /** 浏览器执行路径 */
     if (!this.config?.executablePath) {
-      const version = this.config.version || '125.0.6422.78'
+      const version = PUPPETEER_REVISIONS['chrome-headless-shell']
       const init = new InitChrome(version)
       const executablePath = await init.init()
       this.browserOptions.executablePath = executablePath

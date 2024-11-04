@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.8](https://github.com/KarinJS/puppeteer-core/compare/v1.0.7...v1.0.8) (2024-11-04)
+
+
+### Bug Fixes
+
+* 过时的screensEval ([117d323](https://github.com/KarinJS/puppeteer-core/commit/117d32371589858d9ac09d5420cfd624de02febc))
+
 ## [1.0.7](https://github.com/KarinJS/puppeteer-core/compare/v1.0.6...v1.0.7) (2024-11-04)
 
 

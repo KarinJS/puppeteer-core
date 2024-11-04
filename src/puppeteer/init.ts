@@ -171,6 +171,14 @@ export default class InitChrome {
       ]
 
       await install(list)
+    } else if (/arch/i.test(system)) {
+      // 我也不知道这玩意到底需要什么依赖...反正是chatgpt提供的。
+      const list = [
+        { type: '依赖', command: 'pacman -S --noconfirm alsa-lib atk cups gtk3 libxcomposite libxrandr libxdamage libxext libxi libxss libxtst pango xorg-fonts-100dpi xorg-fonts-75dpi xorg-fonts-cyrillic xorg-fonts-misc xorg-fonts-type1 nss libxshmfence libcups libu2f-host libgcrypt' },
+        { type: '字体', command: 'pacman -S --noconfirm ttf-wqy-microhei noto-fonts-cjk adobe-source-han-sans-cn-fonts' },
+      ]
+
+      await install(list)
     } else {
       console.error(`[Error] 未知系统: ${system} 请自行处理 Chrome 依赖`)
       return

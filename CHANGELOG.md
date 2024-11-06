@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/KarinJS/puppeteer-core/compare/v1.1.0...v1.1.1) (2024-11-06)
+
+
+### Bug Fixes
+
+* 修正返回类型非buffer ([74b0d2d](https://github.com/KarinJS/puppeteer-core/commit/74b0d2d75378816c6436e3a0abb658d7a40021ee))
+
 ## [1.1.0](https://github.com/KarinJS/puppeteer-core/compare/v1.0.8...v1.1.0) (2024-11-04)
 
 

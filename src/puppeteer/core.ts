@@ -156,10 +156,10 @@ export class Render {
       /** 整个页面截图 */
       if (data.fullPage) {
         options.captureBeyondViewport = true
-        const image = await page.screenshot(options)
+        const uint8Array = await page.screenshot(options)
         await this.setViewport(page, data?.setViewport?.width, data?.setViewport?.height, data?.setViewport?.deviceScaleFactor)
         this.screenshot(page)
-        return image as T['multiPage'] extends true | number ? Buffer[] : Buffer
+        return Buffer.from(uint8Array) as RenderResult<T>
       }
 
       /** 获取页面元素 */
@@ -176,10 +176,10 @@ export class Render {
       /** 指定元素截图 */
       if (!data.multiPage) {
         /** 截图 */
-        const image = await page.screenshot(options)
+        const uint8Array = await page.screenshot(options)
 
         this.screenshot(page)
-        return image as RenderResult<T>
+        return Buffer.from(uint8Array) as RenderResult<T>
       }
 
       /** 分页截图 */
@@ -205,8 +205,8 @@ export class Render {
 
         /** 截图位置 */
         data.clip = { x: 0, y, width: boxWidth, height: clipHeight }
-        const Uint8Array = await body!.screenshot(data)
-        const buffer = Buffer.from(Uint8Array)
+        const uint8Array = await body!.screenshot(data)
+        const buffer = Buffer.from(uint8Array)
         list.push(buffer)
       }
 

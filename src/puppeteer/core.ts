@@ -80,13 +80,9 @@ export interface screenshot extends ScreenshotOptions {
   setRequestInterception?: (HTTPRequest: HTTPRequest, data: screenshot) => void
 }
 
-export interface screenshotRes {
-  status: 'ok' | 'fail'
-  data: string | string[] | Buffer | Buffer[] | Error
-}
-
 /** 截图返回 */
-export type RenderResult<T extends screenshot> = T['multiPage'] extends true | number ? Buffer[] : Buffer
+export type RenderEncoding<T extends screenshot> = T['encoding'] extends 'base64' ? string : Uint8Array
+export type RenderResult<T extends screenshot> = T['multiPage'] extends true | number ? RenderEncoding<T>[] : RenderEncoding<T>
 
 export class Render {
   /** 浏览器id */
@@ -159,7 +155,7 @@ export class Render {
         const uint8Array = await page.screenshot(options)
         await this.setViewport(page, data?.setViewport?.width, data?.setViewport?.height, data?.setViewport?.deviceScaleFactor)
         this.screenshot(page)
-        return Buffer.from(uint8Array) as RenderResult<T>
+        return uint8Array as RenderResult<T>
       }
 
       /** 获取页面元素 */
@@ -179,11 +175,11 @@ export class Render {
         const uint8Array = await page.screenshot(options)
 
         this.screenshot(page)
-        return Buffer.from(uint8Array) as RenderResult<T>
+        return uint8Array as RenderResult<T>
       }
 
       /** 分页截图 */
-      const list: Buffer[] = []
+      const list: Array<Uint8Array | string> = []
       const boxWidth = box?.width ?? 1200
       const boxHeight = box?.height ?? 2000
 
@@ -206,8 +202,7 @@ export class Render {
         /** 截图位置 */
         data.clip = { x: 0, y, width: boxWidth, height: clipHeight }
         const uint8Array = await body!.screenshot(data)
-        const buffer = Buffer.from(uint8Array)
-        list.push(buffer)
+        list.push(uint8Array)
       }
 
       return list as RenderResult<T>
@@ -286,13 +281,13 @@ export class Render {
   async elementHandle (page: Page, name?: string) {
     try {
       if (name) {
-        const element = await page.$(name) || await page.$('body') || await page.$('#container')
+        const element = await page.$(name) || await page.$('#container') || await page.$('body')
         return element
       }
-      const element = await page.$('body') || await page.$('#container')
+      const element = await page.$('#container') || await page.$('body')
       return element
     } catch (err) {
-      return await page.$('body') || await page.$('#container')
+      return await page.$('#container') || await page.$('body')
     }
   }
 

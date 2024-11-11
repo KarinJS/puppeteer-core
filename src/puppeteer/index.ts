@@ -59,8 +59,6 @@ export class Puppeteer {
         '--no-zygote',
         '--disable-extensions',
         '--disable-dev-shm-usage',
-        '--window-size=1920,1080',
-        '--force-device-scale-factor=2',
       ],
     }
     this.browserOptions = this.config

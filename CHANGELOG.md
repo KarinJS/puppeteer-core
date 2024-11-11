@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/KarinJS/puppeteer-core/compare/v1.1.1...v1.1.2) (2024-11-11)
+
+
+### Bug Fixes
+
+* 截图返回值修正 ([b9ef6e1](https://github.com/KarinJS/puppeteer-core/commit/b9ef6e1156cfbcc9cadf107eadfa53e8753d89db))
+
 ## [1.1.1](https://github.com/KarinJS/puppeteer-core/compare/v1.1.0...v1.1.1) (2024-11-06)
 
 

@@ -82,7 +82,10 @@ export interface screenshot extends ScreenshotOptions {
 
 /** 截图返回 */
 export type RenderEncoding<T extends screenshot> = T['encoding'] extends 'base64' ? string : Uint8Array
-export type RenderResult<T extends screenshot> = T['multiPage'] extends true | number ? RenderEncoding<T>[] : RenderEncoding<T>
+/** 单页或多页截图返回 */
+export type RenderResult<T extends screenshot> = T['multiPage'] extends true | number
+  ? RenderEncoding<T> extends string ? string[] : Uint8Array[]
+  : RenderEncoding<T>
 
 export class Render {
   /** 浏览器id */

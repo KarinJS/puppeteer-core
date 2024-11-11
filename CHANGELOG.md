@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/KarinJS/puppeteer-core/compare/v1.1.2...v1.1.3) (2024-11-11)
+
+
+### Bug Fixes
+
+* &lt;T&gt; extends string ? string[] : Uint8Array[] ([40b3850](https://github.com/KarinJS/puppeteer-core/commit/40b3850fef8dea074c915febd7d53cbf578c404b))
+
 ## [1.1.2](https://github.com/KarinJS/puppeteer-core/compare/v1.1.1...v1.1.2) (2024-11-11)
 
 

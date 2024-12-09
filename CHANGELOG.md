@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/KarinJS/puppeteer-core/compare/v1.1.3...v1.1.4) (2024-12-09)
+
+
+### Bug Fixes
+
+* 修正可能存在的内存泄漏。 ([b701d41](https://github.com/KarinJS/puppeteer-core/commit/b701d41f3362c97b5d59e26595abd38135ede351))
+
 ## [1.1.3](https://github.com/KarinJS/puppeteer-core/compare/v1.1.2...v1.1.3) (2024-11-11)
 
 

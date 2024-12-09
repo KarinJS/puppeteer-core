@@ -1,4 +1,4 @@
-import { Puppeteer } from './puppeteer'
+import { Puppeteer } from './puppeteer/index'
 
 export default Puppeteer
-export * from './puppeteer'
+export * from './puppeteer/index'

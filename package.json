@@ -26,11 +26,10 @@
     "package.json"
   ],
   "scripts": {
-    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && npm run fix:all",
-    "build:npm": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
-    "fix:all": "eslint lib/**/*.js --fix && eslint lib/**/*.d.ts --fix",
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "pub": "npm publish --access public",
-    "sort": "npx sort-package-json"
+    "sort": "npx sort-package-json",
+    "sync": "curl -X PUT \"https://registry-direct.npmmirror.com/-/package/@karinjs/puppeteer-core/syncs\""
   },
   "dependencies": {
     "decompress": "4.2.1",

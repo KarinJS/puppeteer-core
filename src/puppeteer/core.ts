@@ -114,15 +114,19 @@ export class Render {
     this.process = this.browser.process()
 
     /** 监听浏览器关闭事件 移除浏览器实例 */
-    this.browser.on('disconnected', () => {
+    this.browser.on('disconnected', async () => {
       console.error(`[浏览器][${this.id}] 已关闭或崩溃`)
 
       /** 传递一个浏览器崩溃事件出去 用于在浏览器池子中移除掉当前浏览器 */
       common.emit('browserCrash', this.id)
       /** 尝试关闭 */
-      this.browser?.close && this.browser.close().catch(() => { })
+      if (this.browser) {
+        await this.browser?.close().catch(() => { })
+      }
       /** 如果pid存在 再使用node自带的kill杀一次 */
-      this.process?.pid && process.kill(this.process.pid)
+      if (this.process?.pid) {
+        process.kill(this.process.pid)
+      }
     })
   }
 
@@ -133,10 +137,11 @@ export class Render {
    * @returns 截图结果
    */
   async render<T extends screenshot> (echo: string, data: T): Promise<RenderResult<T>> {
+    let page: Page | undefined
     try {
       this.list.set(echo, true)
       /** 创建页面 */
-      const page = await this.page(data)
+      page = await this.page(data)
 
       const options = {
         path: data.path,
@@ -157,7 +162,6 @@ export class Render {
         options.captureBeyondViewport = true
         const uint8Array = await page.screenshot(options)
         await this.setViewport(page, data?.setViewport?.width, data?.setViewport?.height, data?.setViewport?.deviceScaleFactor)
-        this.screenshot(page)
         return uint8Array as RenderResult<T>
       }
 
@@ -176,8 +180,6 @@ export class Render {
       if (!data.multiPage) {
         /** 截图 */
         const uint8Array = await page.screenshot(options)
-
-        this.screenshot(page)
         return uint8Array as RenderResult<T>
       }
 
@@ -212,6 +214,10 @@ export class Render {
     } finally {
       /** 从队列中去除 */
       this.list.delete(echo)
+      if (page) {
+        common.emit('screenshot', this.id)
+        await page?.close().catch(() => { })
+      }
     }
   }
 
@@ -292,15 +298,6 @@ export class Render {
     } catch (err) {
       return await page.$('#container') || await page.$('body')
     }
-  }
-
-  /**
-   * 生成图片次数+1 并关闭页面
-   * @param page 页面实例
-   */
-  async screenshot (page: Page) {
-    common.emit('screenshot', this.id)
-    await page.close().catch(() => { })
   }
 
   /**

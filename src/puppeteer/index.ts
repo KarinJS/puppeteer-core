@@ -82,10 +82,13 @@ export class Puppeteer {
     }
 
     /** 监听浏览器关闭事件 移除浏览器实例 */
-    common.on('browserCrash', (id) => {
+    common.on('browserCrash', async (id) => {
       const index = this.list.findIndex(item => item.id === id)
-      if (index !== -1) this.list.splice(index, 1)
-      /** 新开浏览器 */
+      if (index !== -1) {
+        const browser = this.list[index]
+        this.list.splice(index, 1)
+        await browser?.browser?.close().catch(() => { })
+      }
       this.launch()
     })
 

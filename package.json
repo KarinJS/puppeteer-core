@@ -15,6 +15,16 @@
     "type": "git",
     "url": "git+https://github.com/KarinJS/puppeteer-core.git"
   },
+  "exports": {
+    ".": {
+      "import": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    },
+    "./puppeteer-core": {
+      "import": "./lib/puppeteer.js",
+      "types": "./lib/puppeteer.d.ts"
+    }
+  },
   "license": "MIT",
   "author": "shijin",
   "type": "module",
@@ -33,11 +43,13 @@
   },
   "dependencies": {
     "decompress": "4.2.1",
-    "puppeteer-core": "23.6.1"
+    "progress": "^2.0.3",
+    "puppeteer-core": "23.10.1"
   },
   "devDependencies": {
     "@types/decompress": "^4.2.7",
     "@types/node": "20.14.2",
+    "@types/progress": "^2.0.7",
     "eslint": "latest",
     "neostandard": "latest",
     "sort-package-json": "2.10.0",

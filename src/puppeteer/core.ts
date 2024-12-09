@@ -1,6 +1,6 @@
 import { common } from '@Common'
 import { ChildProcess } from 'child_process'
-import puppeteer, { Browser, GoToOptions, HTTPRequest, Page, PuppeteerLaunchOptions, ScreenshotOptions } from 'puppeteer-core'
+import puppeteer, { Browser, GoToOptions, HTTPRequest, Page, LaunchOptions, ScreenshotOptions } from 'puppeteer-core'
 
 export interface screenshot extends ScreenshotOptions {
   /** http地址或本地文件路径 */
@@ -91,14 +91,14 @@ export class Render {
   /** 浏览器id */
   id: number
   /** 浏览器启动配置 */
-  config: PuppeteerLaunchOptions
+  config: LaunchOptions
   /** 浏览器实例 */
   browser!: Browser
   /** 截图队列 存放每个任务的唯一标识 */
   list: Map<string, any>
   /** 浏览器进程 */
   process!: ChildProcess | null
-  constructor (id: number, config: PuppeteerLaunchOptions) {
+  constructor (id: number, config: LaunchOptions) {
     this.id = id
     this.config = config
     this.list = new Map()

@@ -2,10 +2,10 @@ import crypto from 'crypto'
 import InitChrome from './init'
 import { common } from '@Common'
 import { Render, RenderResult, screenshot } from './core'
-import { PuppeteerLaunchOptions } from 'puppeteer-core'
-import { PUPPETEER_REVISIONS } from 'puppeteer-core/lib/cjs/puppeteer/revisions.js'
+import { LaunchOptions } from 'puppeteer-core'
+import { PUPPETEER_REVISIONS } from 'puppeteer-core/internal/revisions.js'
 
-export interface RunConfig extends PuppeteerLaunchOptions {
+export interface RunConfig extends LaunchOptions {
   /**
    * 启动浏览器数量
    * @default 1
@@ -31,6 +31,11 @@ export interface RunConfig extends PuppeteerLaunchOptions {
    * 通过管道而不是 WebSocket 连接到浏览器。在大多数情况下，这将导致更快的页面加载。
    */
   pipe?: boolean
+  /**
+   * 需要使用的浏览器标识
+   * @default 'chrome-headless-shell'
+   */
+  chrome?: 'chrome-headless-shell' | 'chrome'
 }
 
 /**
@@ -44,7 +49,7 @@ export class Puppeteer {
   /** 实例管理器配置 初始化的时候传递 */
   config: RunConfig
   /** 启动浏览器的参数 初始化后才产生 */
-  browserOptions: PuppeteerLaunchOptions
+  browserOptions: LaunchOptions
   constructor (config?: RunConfig) {
     this.index = 0
     this.list = []
@@ -52,6 +57,7 @@ export class Puppeteer {
       pipe: true,
       headless: true,
       devtools: false,
+      chrome: 'chrome',
       args: [
         '--enable-gpu',
         '--no-sandbox',
@@ -62,6 +68,7 @@ export class Puppeteer {
       ],
     }
     this.browserOptions = this.config
+    if (!this.config.chrome) this.config.chrome = 'chrome'
   }
 
   async init () {
@@ -70,8 +77,8 @@ export class Puppeteer {
 
     /** 浏览器执行路径 */
     if (!this.config?.executablePath) {
-      const version = PUPPETEER_REVISIONS['chrome-headless-shell']
-      const init = new InitChrome(version)
+      const version = PUPPETEER_REVISIONS[this.config.chrome!]
+      const init = new InitChrome(version, this.config.chrome!)
       const executablePath = await init.init()
       this.browserOptions.executablePath = executablePath
     }

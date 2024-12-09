@@ -31,15 +31,17 @@ export const enum ChromeUrl {
 }
 
 export default class InitChrome {
-  /**
-   * @param version - 传入下载的chrome版本
-   */
+  /** 版本 */
   version: string
+  /** 操作系统标识符 */
   platform: Platform
+  /** chrome信息 */
   info: Info
-  constructor (version: string) {
+  /** browser标识 暂不支持firefox  */
+  browser: string
+  constructor (version: string, headless: 'chrome-headless-shell' | 'chrome') {
+    this.browser = headless
     this.version = version
-    /** 获取系统版本 */
     this.platform = common.Platform()
     this.info = this.GetInfo()
   }
@@ -53,6 +55,8 @@ export default class InitChrome {
     if (common.exists(this.info.chrome)) {
       console.info(`[chrome] ${this.info.chrome}`)
       return this.info.chrome
+    } else {
+      console.info('[chrome][init] 未找到chrome，开始下载')
     }
 
     /** 下载chrome */
@@ -193,7 +197,7 @@ export default class InitChrome {
   async GetDownloadUrl (host: ChromeUrl = ChromeUrl.Cnpm): Promise<string> {
     try {
       /** 组合url */
-      const url = `${host}/${this.version}/${this.platform}/chrome-headless-shell-${this.platform}.zip`
+      const url = `${host}/${this.version}/${this.platform}/${this.browser}-${this.platform}.zip`
       console.info(`[chrome][init] 获取下载地址完成：${url}`)
       return url
     } catch (e) {
@@ -219,19 +223,19 @@ export default class InitChrome {
     /** 是否为windows */
     const isWin = os.platform() === 'win32'
     /** 缓存目录 */
-    const cache = path.join(os.homedir(), '.cache', 'puppeteer', 'chrome-headless-shell')
+    const cache = path.join(os.homedir(), '.cache', 'puppeteer', this.browser)
     /** 版本 */
     const version = `${platform}-${this.version}`
     /** 存放实际 Chrome 可执行文件的目录 */
     const dir = path.join(cache, version)
     /** 下载后压缩包的存放路径 */
-    const zip = path.join(dir, `chrome-headless-shell-${platform}.zip`)
+    const zip = path.join(dir, `${this.browser}-${platform}.zip`)
     /** 解压路径 */
     const chromeDir = dir
     /** chrome二进制路径 */
-    const chrome = path.join(chromeDir, `chrome-headless-shell-${platform}`, `chrome-headless-shell${isWin ? '.exe' : ''}`)
+    const chrome = path.join(chromeDir, `${this.browser}-${platform}`, `${this.browser}${isWin ? '.exe' : ''}`)
 
-    // tips: 压缩包解压后会带一个文件夹: chrome-headless-shell-${platform}
+    // tips: 压缩包解压后会带一个文件夹: ${this.browser}-${platform}
     return {
       isWin,
       platform,

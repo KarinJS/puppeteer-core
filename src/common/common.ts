@@ -4,10 +4,11 @@ import path from 'path'
 import https from 'https'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
+import ProgressBar from 'progress'
 import decompress from 'decompress'
 import { fileURLToPath } from 'url'
-import { exec as execCmd, ExecOptions } from 'child_process'
 import { EventEmitter } from 'events'
+import { exec as execCmd, ExecOptions } from 'child_process'
 
 const streamPipeline = promisify(pipeline)
 
@@ -112,6 +113,46 @@ export class Common extends EventEmitter {
             reject(new Error(`Failed to get '${url}' (${res.statusCode})`))
             return
           }
+
+          /** 计算下载进度 */
+          const calculateProgress = (downloadedSize: number, total: number, startTime: number) => {
+            /** 耗时 */
+            const elapsedTime = (Date.now() - startTime) / 1000
+            /** 当前已下载 */
+            const data = downloadedSize / (1024 * 1024)
+            /** 下载速度 */
+            const speed = (data / elapsedTime).toFixed(2)
+            /** 总大小 */
+            const size = (total / (1024 * 1024)).toFixed(2)
+            /** 已过去时间 */
+            const time = Math.floor(elapsedTime)
+
+            return { speed, size, time, data: data.toFixed(2) }
+          }
+
+          /** 文件总大小 */
+          const total = Number(res.headers['content-length'] || '0')
+          let downloadedSize = 0
+          const startTime = Date.now()
+
+          /** 进度条 */
+          const progressBar = new ProgressBar('🚀 下载进度 [:bar] :percent :data/:size MB | :speed MB/s :times', {
+            total,
+            width: 30,
+            complete: '=',
+            incomplete: ' ',
+          })
+
+          /** 更新下载进度条 */
+          res.on('data', (chunk) => {
+            downloadedSize += chunk.length
+            const options = calculateProgress(downloadedSize, total, startTime)
+            progressBar.tick(chunk.length, options)
+          })
+
+          res.on('end', () => {
+            console.log('\n')
+          })
 
           const fileStream = fs.createWriteStream(file)
           streamPipeline(res, fileStream)

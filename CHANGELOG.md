@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/KarinJS/puppeteer-core/compare/v1.1.4...v1.2.0) (2024-12-09)
+
+
+### Features
+
+* 下载进度条 ([ecadea5](https://github.com/KarinJS/puppeteer-core/commit/ecadea56aeaadad07f17fdc515f372532d8dad36))
+
 ## [1.1.4](https://github.com/KarinJS/puppeteer-core/compare/v1.1.3...v1.1.4) (2024-12-09)
 
 

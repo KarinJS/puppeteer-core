@@ -50,6 +50,8 @@ export class Puppeteer {
   config: RunConfig
   /** 启动浏览器的参数 初始化后才产生 */
   browserOptions: LaunchOptions
+  /** 浏览器路径 */
+  chromePath!: string
   constructor (config?: RunConfig) {
     this.index = 0
     this.list = []
@@ -79,8 +81,8 @@ export class Puppeteer {
     if (!this.config?.executablePath) {
       const version = PUPPETEER_REVISIONS[this.config.chrome!]
       const init = new InitChrome(version, this.config.chrome!)
-      const executablePath = await init.init()
-      this.browserOptions.executablePath = executablePath
+      this.chromePath = await init.init()
+      this.browserOptions.executablePath = this.chromePath
     }
 
     /** 用户数据存储路径 */

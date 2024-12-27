@@ -3,7 +3,7 @@ import { ChildProcess } from 'child_process'
 import puppeteer, { Browser, GoToOptions, HTTPRequest, Page, LaunchOptions, ScreenshotOptions } from 'puppeteer-core'
 
 export interface screenshot extends ScreenshotOptions {
-  /** http地址或本地文件路径 */
+  /** http地址、本地文件路径、html字符串 */
   file: string
   /**
  * 选择的元素截图
@@ -98,10 +98,13 @@ export class Render {
   list: Map<string, any>
   /** 浏览器进程 */
   process!: ChildProcess | null
+  /** 页面实例 */
+  // pages: Page[]
   constructor (id: number, config: LaunchOptions) {
     this.id = id
     this.config = config
     this.list = new Map()
+    // this.pages = []
   }
 
   /**
@@ -216,6 +219,7 @@ export class Render {
       this.list.delete(echo)
       if (page) {
         common.emit('screenshot', this.id)
+        page.removeAllListeners()
         await page?.close().catch(() => { })
       }
     }
@@ -228,21 +232,58 @@ export class Render {
   async page (data: screenshot) {
     /** 创建页面 */
     const page = await this.browser.newPage()
+    // let page: Page
 
-    /** 请求拦截处理 */
+    /** 打开页面数+1 */
+    common.emit('newPage', this.id)
+
+    // /** 如果waitUntil传参了 直接加载页面 */
+    // if (data?.pageGotoParams?.waitUntil) {
+    //   /** 有监听器需求 new一个 */
+    //   if (typeof data.setRequestInterception === 'function') {
+    //     page = await this.browser.newPage()
+    //     this.pages.push(page)
+
+    //     /** 请求拦截处理 */
+    //     await page.setRequestInterception(true)
+    //     page.on('request', (req) => data.setRequestInterception!(req, data))
+    //   } else {
+    //     /** 无监听器需求 从页面中拿一个 */
+    //     page = this.pages[0]
+    //   }
+
+    //   /** 设置HTTP 标头 */
+    //   if (data.headers) await page.setExtraHTTPHeaders(data.headers)
+
+    //   /** 打开、加载页面 */
+    //   if (data.file.startsWith('http') || data.file.startsWith('file://')) {
+    //     await page.goto(data.file, data.pageGotoParams)
+    //   } else {
+    //     await page.setContent(data.file, data.pageGotoParams)
+    //   }
+    // } else {
+    //   /** 有监听器需求 new一个 */
+    //   page = await this.browser.newPage()
+    //   this.pages.push(page)
+    //   /** 设置HTTP 标头 */
+    //   if (data.headers) await page.setExtraHTTPHeaders(data.headers)
+    //   /** 模拟0毫秒的waitUntil */
+    //   await this.simulateWaitUntil(page, data)
+    // }
+
+    /** 设置HTTP 标头 */
+    if (data.headers) await page.setExtraHTTPHeaders(data.headers)
     if (typeof data.setRequestInterception === 'function') {
       await page.setRequestInterception(true)
       page.on('request', (req) => data.setRequestInterception!(req, data))
     }
 
-    /** 打开页面数+1 */
-    common.emit('newPage', this.id)
-
-    /** 设置HTTP 标头 */
-    if (data.headers) await page.setExtraHTTPHeaders(data.headers)
-
-    /** 加载页面 */
-    await page.goto(data.file, data.pageGotoParams)
+    /** 打开页面 */
+    if (data.file.startsWith('http') || data.file.startsWith('file://')) {
+      await page.goto(data.file, data.pageGotoParams)
+    } else {
+      await page.setContent(data.file, data.pageGotoParams)
+    }
 
     /** 等待body加载完成 */
     await page.waitForSelector('body')
@@ -314,5 +355,61 @@ export class Render {
       deviceScaleFactor: Math.round(deviceScaleFactor || 1),
     }
     await page.setViewport(setViewport)
+  }
+
+  /**
+   * 实验性功能
+   * @param page 页面实例
+   * @param data 截图参数
+   * @description 通过捕获请求和响应来模拟0毫秒的waitUntil
+   */
+  async simulateWaitUntil (page: Page, data: screenshot) {
+    if (!data.pageGotoParams) data.pageGotoParams = {}
+    data.pageGotoParams.waitUntil = 'load'
+
+    const list: Record<string, number> = {}
+
+    const delCount = (url: string) => {
+      if (list[url]) list[url]--
+      if (list[url] <= 0) delete list[url]
+      if (Object.keys(list).length <= 0) common.emit('end', true)
+    }
+
+    page.on('request', (req) => {
+      const url = req.url()
+      if (typeof list[url] !== 'number') {
+        list[url] = 0
+        return
+      }
+
+      list[url]++
+      req.continue()
+    })
+
+    page.on('response', request => delCount(request.url()))
+    page.on('requestfailed', request => delCount(request.url()))
+    page.on('requestfinished', request => delCount(request.url()))
+
+    /** 加载页面 */
+    let result
+    if (data.file.startsWith('http') || data.file.startsWith('file://')) {
+      result = page.goto(data.file, data.pageGotoParams)
+    } else {
+      result = page.setContent(data.file, data.pageGotoParams)
+    }
+
+    await new Promise((resolve) => {
+      const timer = setTimeout(() => {
+        resolve(true)
+        common.emit('end', false)
+      }, 10000)
+
+      common.once('end', (bool) => {
+        if (bool) clearTimeout(timer)
+        resolve(true)
+      })
+    })
+
+    await result
   }
 }

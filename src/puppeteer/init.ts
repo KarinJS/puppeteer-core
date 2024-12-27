@@ -20,6 +20,8 @@ export interface Info {
   chromeDir: string
   /** chrome二进制路径 */
   chrome: string
+  /** deb.deps路径 仅在linux下存在 */
+  debDeps: string
 }
 
 /**
@@ -150,6 +152,10 @@ export default class InitChrome {
       'xdg-utils',
     ]
 
+    if (process.getuid?.() !== 0) {
+      throw new Error('安装系统依赖需要root权限')
+    }
+
     /** 获取当前的系统 */
     const system = await common.exec('cat /etc/os-release').catch(() => '') as string
 
@@ -169,9 +175,13 @@ export default class InitChrome {
 
       await install(list)
     } else if (/debian|ubuntu/i.test(system)) {
+      let cmd = 'apt install fonts-wqy-microhei fonts-noto-cjk fonts-adobe-source-han-sans-cn'
+      if (this.info.debDeps && fs.existsSync(this.info.debDeps)) {
+        cmd = fs.readFileSync(this.info.debDeps, 'utf-8').split('\n').join(',')
+      }
       const list = [
         { type: '依赖', command: `apt-get install -y ${Debian.join(' ')}` },
-        { type: '字体', command: 'apt install fonts-wqy-microhei fonts-noto-cjk fonts-adobe-source-han-sans-cn' },
+        { type: '字体', command: cmd }
       ]
 
       await install(list)
@@ -234,6 +244,8 @@ export default class InitChrome {
     const chromeDir = dir
     /** chrome二进制路径 */
     const chrome = path.join(chromeDir, `${this.browser}-${platform}`, `${this.browser}${isWin ? '.exe' : ''}`)
+    /** deb.deps路径 仅在linux下存在 */
+    const debDeps = path.join(chromeDir, `${this.browser}-${platform}`, 'deb.deps')
 
     // tips: 压缩包解压后会带一个文件夹: ${this.browser}-${platform}
     return {
@@ -245,6 +257,7 @@ export default class InitChrome {
       zip,
       chromeDir,
       chrome,
+      debDeps,
     }
   }
 }

@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0](https://github.com/KarinJS/puppeteer-core/compare/v1.2.1...v1.3.0) (2024-12-27)
+
+
+### Features
+
+* 添加实验性功能以模拟0毫秒的waitUntil并支持直接传参html字符串 ([1bef5f3](https://github.com/KarinJS/puppeteer-core/commit/1bef5f34709c119c7f6b9d32ae886d5b046b4f2b))
+
+
+### Bug Fixes
+
+* eslint.config.js =&gt; eslint.config.mjs ([aa502fc](https://github.com/KarinJS/puppeteer-core/commit/aa502fce2d6f6050b4267a4104e5de15b099ba30))
+
 ## [1.2.1](https://github.com/KarinJS/puppeteer-core/compare/v1.2.0...v1.2.1) (2024-12-09)
 
 

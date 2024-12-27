@@ -14,12 +14,13 @@ interface PageInfo {
 
 export class PagePool {
   private pool: Map<string, PageInfo> = new Map()
-  private maxSize: number = 10
+  private maxSize: number
   private idleTimeout: number = 60000 // 1分钟
   private render: Render
 
-  constructor (render: Render) {
+  constructor (render: Render, maxPages?: number) {
     this.render = render
+    this.maxSize = maxPages || 10
     this.initFirstPage()
   }
 

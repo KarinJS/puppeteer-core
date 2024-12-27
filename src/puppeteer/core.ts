@@ -1,7 +1,13 @@
 import { common } from '@Common'
 import { ChildProcess } from 'child_process'
-import puppeteer, { Browser, GoToOptions, HTTPRequest, Page, LaunchOptions, ScreenshotOptions } from 'puppeteer-core'
+import puppeteer, { Browser, GoToOptions, HTTPRequest, Page, LaunchOptions as PuppeteerLaunchOptions, ScreenshotOptions } from 'puppeteer-core'
 import { PagePool } from './pagePool'
+
+// 扩展 LaunchOptions 类型
+export interface LaunchOptions extends PuppeteerLaunchOptions {
+  /** 页面池最大数量 默认10 */
+  maxPages?: number
+}
 
 export interface screenshot extends ScreenshotOptions {
   /** http地址、本地文件路径、html字符串 */
@@ -119,8 +125,8 @@ export class Render {
     /** 浏览器id */
     this.process = this.browser.process()
 
-    // 初始化页面池
-    this.pagePool = new PagePool(this)
+    // 初始化页面池，传入最大页面数配置
+    this.pagePool = new PagePool(this, this.config.maxPages)
 
     /** 监听浏览器关闭事件 移除浏览器实例 */
     this.browser.on('disconnected', async () => {

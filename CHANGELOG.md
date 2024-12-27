@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://github.com/KarinJS/puppeteer-core/compare/v1.3.0...v1.4.0) (2024-12-27)
+
+
+### Features
+
+* 扩展LaunchOptions类型，支持配置页面池最大数量 ([9444825](https://github.com/KarinJS/puppeteer-core/commit/9444825eb1ea57a8d1e0049d6377ea52911ef135))
+* 添加页面池管理功能，支持页面的创建、获取、释放和关闭 ([990ce49](https://github.com/KarinJS/puppeteer-core/commit/990ce49a323d2dfd8a36565718f9c7f21dec0ef1))
+
 ## [1.3.0](https://github.com/KarinJS/puppeteer-core/compare/v1.2.1...v1.3.0) (2024-12-27)
 
 

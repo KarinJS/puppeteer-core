@@ -1,4 +1,5 @@
-import { Puppeteer } from './puppeteer/index'
-
-export default Puppeteer
+export * from './common/common'
+export * from './puppeteer/init'
+export * from './puppeteer/core'
 export * from './puppeteer/index'
+export { Puppeteer as default } from './puppeteer/index'

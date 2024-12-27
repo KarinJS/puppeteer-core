@@ -32,7 +32,7 @@ export const enum ChromeUrl {
   Google = 'https://storage.googleapis.com/chrome-for-testing-public',
 }
 
-export default class InitChrome {
+export class InitChrome {
   /** 版本 */
   version: string
   /** 操作系统标识符 */

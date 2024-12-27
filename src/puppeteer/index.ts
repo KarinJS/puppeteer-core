@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import InitChrome from './init'
+import { InitChrome } from './init'
 import { common } from '@Common'
 import { Render, RenderResult, screenshot } from './core'
 import { LaunchOptions } from 'puppeteer-core'

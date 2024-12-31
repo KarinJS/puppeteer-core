@@ -281,7 +281,8 @@ export class Render {
     if (data.waitForSelector) {
       if (!Array.isArray(data.waitForSelector)) data.waitForSelector = [data.waitForSelector]
       for (const selector of data.waitForSelector) {
-        await page.waitForSelector(selector).catch(() => { })
+        /** 元素不存在时超时为10秒，如有多元素则进入另一个元素 */
+        await page.waitForSelector(selector, { timeout: 10000}).catch(() => { console.error(`${selector}元素可能不存在`) })
       }
     }
 
